@@ -4,6 +4,7 @@
 import os
 import sys
 import yaml
+import glob
 import logging
 import pdb
 import pandas as pd
@@ -17,6 +18,20 @@ script_path = os.path.dirname(__file__)
 parent_path = os.path.dirname(os.path.dirname(__file__))
 data_path = os.path.join(parent_path, 'data/clean/loads')
 output_path  = os.path.join(parent_path, 'data/clean/switch_inputs/')
+
+def look_for_file(filename, path):
+    file_path = os.path.join(path, filename)
+    match = [pattern for pattern in glob.glob(f'{file_path}.*')]
+    if not match:
+        return False
+
+    if len(match) < 2:
+        return os.path.splitext(match[0])
+    elif len(match) > 2:
+        click.echo(f'Multiple files detected for {filename}. Please delate one')
+        sys.exit(1)
+        return False
+
 
 def read_yaml(path, filename: str):
     """ Read yaml file"""

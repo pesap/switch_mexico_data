@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict
 from utils import read_yaml, create_default_scenario
-from utils import create_gen_build_cost_new
+from utils import create_gen_build_cost_new, look_for_file
 
 script_path = os.path.dirname(__file__)
 parent_path = os.path.dirname(os.path.dirname(__file__))
@@ -54,7 +54,6 @@ def get_load_data(path=data_path, filename='HighLoads.csv',
         df = pd.read_csv(file_path)
     except FileNotFoundError:
         # TODO: Change this to f' string format
-
         raise FileNotFoundError('File not found. Please verify the file is in: {}'.format(os.path.join(path, filename)))
 
     # Calculate the sum of loads
@@ -191,14 +190,17 @@ def create_investment_period(path=script_path, ext='.tab', **kwargs):
     periods_tab.to_csv(output_file, sep='\t')
 
 
-def create_rps(path=default_path, filename='rps_targets.yaml', ext='.tab'):
+def create_rps(path=default_path, filename='rps_targets', output_name='rps_targets',
+        ext='.yaml', output_ext='.tab'):
     """ Create rps targets file using rps_target.yaml"""
 
-    if ext == '.tab': sep='\t'
+    if output_ext == '.tab': sep='\t'
 
-    output_file = output_path + 'rps_targets' + ext
+    output_file = output_path + output_name + ext
+    file_path = os.path.join(path, filename + ext)
 
-    rps = read_yaml(path, 'rps_targets.yaml')
+    if ext == '.yaml':
+        rps = read_yaml(path, 'rps_targets.yaml')
 
     d = OrderedDict(rps)
     rps_tab = pd.DataFrame(d)
@@ -344,14 +346,11 @@ def create_variablecp(gen_project, data, timeseries_dict, path=parent_path, ext=
     ren_cap_data = ren_cap_data.loc[ren_cap_data['project_name'].isin(gen_project['GENERATION_PROJECT'])]
 
     # Quick fix to names. I need to include more code here
-    replaces = ['é', 'á', 'í', 'ó', 'ú', 'ñ']
+    replaces = [('e', 'é'), ('a', 'á'), ('i', 'í'), ('o', 'ó'), ('u', 'ú') ,
+               ('n', 'ñ')]
     try:
-        ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace('é', 'e')
-        ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace('á', 'a')
-        ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace('í', 'i')
-        ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace('ó', 'o')
-        ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace('ú', 'u')
-        ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace('ñ', 'n')
+        for tupl in replaces:
+            ren_cap_data['GENERATION_PROJECT'] = ren_cap_data['GENERATION_PROJECT'].str.replace(tupl[1], tupl[0])
     except KeyError:
         pass
 
@@ -565,7 +564,6 @@ def main(number, existing, proposed, load, path=script_path, **kwargs):
         click.echo('Creating generation project info')
         gen_project_legacy = pd.read_csv(os.path.join(default_path,
             'generation_projects_info.tab'), sep='\t')
-
         gen_project_proposed = create_default_scenario()
         gen_project = pd.concat([gen_project_legacy, gen_project_proposed])
         gen_legacy = gen_build_predetermined(existing)
@@ -621,8 +619,11 @@ def main(number, existing, proposed, load, path=script_path, **kwargs):
     click.echo(f'Creating loads')
     create_loads(load_data, timeseries)
 
-    click.echo(f'Creating rps')
-    create_rps()
+    rps_file, ext = look_for_file('rps_targets', default_path)
+
+    if rps_file:
+        click.echo(f'Creating rps')
+        create_rps(filename=rps_file, ext=ext)
 
     click.echo(f'App ended')
 
