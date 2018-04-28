@@ -9,7 +9,6 @@ Developers:
 import os
 import sys
 import yaml
-import pdb
 import click
 import numpy as np
 import pandas as pd
@@ -551,10 +550,20 @@ def print_version(ctx, param, value):
               prompt='Select load profile',
               default='high',
               help='Load profile to use')
+@click.option('--debug', is_flag=True,
+              help='Debug mode')
 @click.option('--version', is_flag=True, callback=print_version,
               expose_value=False, is_eager=True)
-def main(number, existing, proposed, load, path=script_path, **kwargs):
+def main(number, existing, proposed, load, debug, path=script_path, **kwargs):
     """ Main function that creates all the inputs 🔥"""
+
+    if debug:
+        def debug(type, value, tb):
+            import traceback, pdb
+            traceback.print_exception(type, value, tb)
+            pdb.pm()
+        sys.excepthook = debug
+
     click.echo('Starting app')
 
 
