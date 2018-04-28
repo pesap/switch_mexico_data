@@ -1,6 +1,4 @@
-# SWITCH Mexico
 <div align="center">
-
 <h1>
   <img src="./static/img/logo-b.png" alt="SWITCH" width="200">
   <h3>A capacity expansion model for the electricity sector.</h4>
@@ -9,6 +7,12 @@
 </h1>
 
 [![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](http://forthebadge.com)
+![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg?style=for-the-badge)
+
+
+
+# SWITCH Mexico
 
 Update: 03/05/2018
 
