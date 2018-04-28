@@ -1,4 +1,15 @@
 # SWITCH Mexico
+<div align="center">
+
+<h1>
+  <img src="./static/img/logo-b.png" alt="SWITCH" width="200">
+  <h3>A capacity expansion model for the electricity sector.</h4>
+  <h4>Input file creation</h4>
+  <br>
+</h1>
+
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](http://forthebadge.com)
+
 Update: 03/05/2018
 
 Repo for SWITCH-Mexico including code and data
