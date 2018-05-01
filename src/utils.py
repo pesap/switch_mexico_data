@@ -6,7 +6,6 @@ import sys
 import yaml
 import glob
 import logging
-import pdb
 import pandas as pd
 from logging.config import fileConfig
 
@@ -141,8 +140,7 @@ def modify_costs(data, ext='.tab'):
 
     return (df)
 
-
-def create_default_scenario():
+def init_scenario():
     """  Create default scenario with existing technology for each loadzone """
 
     gen_project = pd.read_csv('src/generation_projects_info.tab', sep='\t')
@@ -189,6 +187,6 @@ def create_default_scenario():
 if __name__ == '__main__':
     #  pp = PowerPlant('UUUID', 'solar', 'solar', 'Mulege')
     #  pp.add()
-    create_default_scenario()
-    gen_build_cost = create_gen_build_cost_new()
-    modify_costs(gen_build_cost)
+    init_scenario()
+    #  gen_build_cost = create_gen_build_cost_new()
+    #  modify_costs(gen_build_cost)

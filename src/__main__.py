@@ -2,7 +2,8 @@
 import os
 import sys
 
-from create_inputs import main
+from cli import main
+#  from create_inputs import main
 
 if __name__ == '__main__':
-    main()
+    main(obj={})

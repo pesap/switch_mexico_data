@@ -6,8 +6,7 @@ import sys
 ROOT = os.path.dirname(os.path.realpath(__file__))
 sys.path.insert(0, ROOT)
 
-
-from create_inputs import main
+from cli import main
 
 if __name__ == '__main__':
-    main()
+    main(obj={})
