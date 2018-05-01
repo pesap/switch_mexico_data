@@ -12,12 +12,11 @@
 
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/google/skia.svg?style=flat-square)](https://github.com/pesap/switch_mexico_data)
-
 </div>
 
-# SWITCH Mexico
+# SWITCH inputs for Mexico
 
-Update: 03/05/2018
+Update: 05/01/2018
 
 Repo for SWITCH-Mexico including code and data
 
@@ -40,7 +39,6 @@ Sergio, Pedro, Hector and others.
 
 Create a file in src/ called secrets.yml with your API\_KEY for using renewable
 ninja API.
-
 
 The file should look like this:
 
