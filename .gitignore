@@ -19,6 +19,7 @@ figs/
 *.tab
 
 secrets.yml
+.env
 
 # macOS files
 .DS_Store
@@ -43,3 +44,5 @@ Untitle*
 # Pytest cache
 .pytest_cache/
 .vscode
+
+tags

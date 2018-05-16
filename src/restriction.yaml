@@ -49,4 +49,34 @@ technology:
                 - 51-la_paz
                 - 52-los_cabos
                 - 53-mulege
+        hydroelectric_water_renewable:
+                - 01-hermosillo
+                - 02-cananea
+                - 03-obregon
+                - 07-juarez
+                - 08-moctezuma
+                - 09-chihuahua
+                - 11-laguna
+                - 12-rio_escondido
+                - 13-nuevo_laredo
+                - 14-reynosa
+                - 15-matamoros
+                - 16-monterrey
+                - 17-saltillo
+                - 18-valles
+                - 20-tamazunchale
+                - 21-guemez
+                - 23-guadalajara
+                - 24-aguascalientes
+                - 25-san_luis_potosi
+                - 26-salamanca
+                - 27-manzanillo
+                - 28-carapan
+                - 29-lazaro_cardenas
+                - 30-queretaro
+                - 31-central
+                - 33-veracruz
+                - 34-puebla
+                - 35-acapulco
+                - 36-temascal
 
