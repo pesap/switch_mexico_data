@@ -8,15 +8,14 @@ import glob
 import logging
 import pandas as pd
 from logging.config import fileConfig
+from context import *
+from IPython.core.debugger import set_trace
+
 
 logfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log.ini')
 #  print ( f'Log file configuration located at: {logfile_path}')
 fileConfig(logfile_path)
 logger = logging.getLogger('Logger')
-script_path = os.path.dirname(__file__)
-parent_path = os.path.dirname(os.path.dirname(__file__))
-data_path = os.path.join(parent_path, 'data/clean/loads')
-output_path  = os.path.join(parent_path, 'data/clean/switch_inputs/')
 
 def look_for_file(filename, path):
     file_path = os.path.join(path, filename)
@@ -62,7 +61,7 @@ class PowerPlant:
     def add(self):
         print (type(self))
 
-def create_gen_build_cost_new(gen_project, ext='.tab', path=script_path,
+def create_gen_build_cost_new(df_gen, ext='.tab', path=script_path,
     **kwargs):
     """ Create gen build cost output file
 
@@ -86,7 +85,7 @@ def create_gen_build_cost_new(gen_project, ext='.tab', path=script_path,
 
     # FIXME: This will only work if there is no repeated elements
 
-    gen_costs = pd.merge(gen_project, cost_table, on='gen_tech')
+    gen_costs = pd.merge(df_gen, cost_table, on='gen_tech')
     column_order = ['GENERATION_PROJECT', 'build_year', 'gen_overnight_cost',
             'gen_fixed_om', 'gen_tech']
 
@@ -143,30 +142,38 @@ def modify_costs(data, ext='.tab'):
 def init_scenario():
     """  Create default scenario with existing technology for each loadzone """
 
-    gen_project = pd.read_csv('src/generation_projects_info.tab', sep='\t')
-    column_order = gen_project.columns
+    df_gen = pd.read_csv(os.path.join(default_path,
+        'generation_projects_info.tab'), sep='\t')
+    column_order = df_gen.columns
 
     #FIXME: Quick fix to replace tg for turbo_gas
-    gen_project['gen_tech'] = gen_project['gen_tech'].replace('tg','turbo_gas')
+    df_gen['gen_tech'] = df_gen['gen_tech'].replace('tg','turbo_gas')
 
-    gen_default = pd.read_csv('./src/technology_cost.csv')
+    gen_default = pd.read_csv(os.path.join(default_path,
+                                            'technology_cost.csv'))
 
-    # This should be a dictionary
+    #TODO: This should be a dictionary. Maybe YAML
     load_zones = pd.read_csv('src/load_zones.tab', sep='\t', usecols=[0])
 
     # Restriction
-    restriction = read_yaml('src/', 'restriction.yaml')
+    restriction = read_yaml(default_path, 'restriction.yaml')
 
+    gen_restriction = {key:
+            list(set(df_gen['gen_tech']) - set(df_gen.loc[df_gen['gen_load_zone'] == key, 'gen_tech']))
+                        for key in load_zones['LOAD_ZONE']}
     iterator = 1
     prop_gens = []
     for row in load_zones.itertuples():
         lz = row[1]
+        gen_lz_restriction = gen_restriction[lz]
 
         # Get restriction technology by load zone
         lz_restriction = [key for key, value in restriction['technology'].items()
                                                 if lz in value]
+        tech_rest = set(gen_lz_restriction) | set(lz_restriction)
+
         # Filter restricted technologiesj
-        prop_gen = gen_default.loc[~gen_default['gen_tech'].isin(lz_restriction)].copy()
+        prop_gen = gen_default.loc[~gen_default['gen_tech'].isin(tech_rest)].copy()
 
         # Include load zone information
         prop_gen.loc[:, 'gen_load_zone'] = lz
@@ -178,10 +185,10 @@ def init_scenario():
         prop_gens.append(prop_gen)
 
         iterator +=1
-    gen_project = pd.concat(prop_gens)
-    gen_project[column_order].to_csv('generation_test.tab', sep='\t', index=False)
+    df_gen = pd.concat(prop_gens)
+    df_gen[column_order].to_csv('generation_test.tab', sep='\t', index=False)
 
-    return gen_project[column_order]
+    return df_gen[column_order]
 
 
 if __name__ == '__main__':

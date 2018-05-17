@@ -1,13 +1,13 @@
 import sys
 import click
 from __version__ import __version__
-from test_cli import utils
+from context import *
+#  from test_cli import utils
 from utils import read_yaml, init_scenario
 from utils import create_gen_build_cost_new, look_for_file
 from create_inputs import *
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-script_path = os.path.dirname(__file__)
 
 def print_version(ctx, param, value):
     if not value or ctx.resilient_parsing:
@@ -29,7 +29,7 @@ def main(ctx, debug):
 @click.option('--number', default=4, prompt='Number of timepoints',
                 help='Number of timepoints possible [1, 2, 3, 4, 6, 8, 12]')
 @click.option('--existing/--no-existing',
-              default=False,
+              default=True,
               prompt='Include existing plants',
               help='Add existing plants to the analysis')
 @click.option('--proposed/--no-proposed',
@@ -114,7 +114,7 @@ def create(ctx, number, existing, proposed, load, path=script_path, **kwargs):
 
     click.echo(f'App ended')
 
-main.add_command(utils)
+#  main.add_command(utils)
 
 if __name__ == "__main__":
     main(obj={})

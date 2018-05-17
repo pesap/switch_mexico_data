@@ -11,15 +11,11 @@ import sys
 import yaml
 import numpy as np
 import pandas as pd
+from context import *
 from collections import OrderedDict
 from utils import read_yaml, init_scenario
 from utils import create_gen_build_cost_new, look_for_file
 
-script_path = os.path.dirname(__file__)
-parent_path = os.path.dirname(os.path.dirname(__file__))
-data_path = os.path.join(parent_path, 'data/clean/loads')
-default_path = os.path.join(parent_path, 'data/default/')
-output_path  = os.path.join(parent_path, 'data/clean/switch_inputs/')
 
 def get_load_data(path=data_path, filename='HighLoads.csv',
          total=False, *args, **kwargs):
@@ -188,13 +184,13 @@ def create_investment_period(path=script_path, ext='.tab', **kwargs):
     periods_tab.to_csv(output_file, sep='\t')
 
 
-def create_rps(path=default_path, filename='rps_targets', output_name='rps_targets',
-        ext='.yaml', output_ext='.tab'):
+def create_rps(path=default_path, filename='rps_targets',
+                output_name='rps_targets', ext='.yaml', output_ext='.tab'):
     """ Create rps targets file using rps_target.yaml"""
 
     if output_ext == '.tab': sep='\t'
 
-    output_file = output_path + output_name + ext
+    output_file = output_path + output_name + output_ext
     file_path = os.path.join(path, filename + ext)
 
     if ext == '.yaml':
