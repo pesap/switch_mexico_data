@@ -478,12 +478,11 @@ def create_gen_build_cost(gen_project, gen_legacy,  ext='.tab', path=script_path
 
     gen_build_cost = pd.concat(output_costs)
 
-    # Temporal fix
+    # FIXME: Temporal fix to avoid duplicate entries
     df = (gen_build_cost.sort_values('gen_fixed_om')
             .drop_duplicates(subset=['GENERATION_PROJECT', 'build_year'],
                     keep='last'))
     df.to_csv(output_file, sep=sep, index=False)
-    #  import pdb; pdb.set_trace()
     #  gen_build_cost.to_csv(output_file, sep=sep, index=False)
 
 def modify_costs(data):
