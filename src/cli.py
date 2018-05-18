@@ -108,6 +108,7 @@ def create(ctx, number, existing, proposed, load, path=script_path, **kwargs):
 
     rps_file, ext = look_for_file('rps_targets', default_path)
 
+    click.echo(f'Creating fuel loads')
     if rps_file:
         click.echo(f'Creating rps')
         create_rps(filename=rps_file, ext=ext)
