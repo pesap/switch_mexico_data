@@ -128,7 +128,7 @@ def get_peak_day(data, number, freq='MS'):
 
         years.append(peak_timestamps)
 
-    output_data = pd.concat(years)
+    output_data = pd.concat(years, sort=True)
     output_data = output_data.rename(columns={'datetime':'date',
                                     'total':'peak_day'})
     return (output_data)
@@ -157,7 +157,7 @@ def get_median_day(data, number, freq='MS'):
             # Even number of days
             index_median = (np.abs(grouper-grouper.median())).idxmin()
         years.append(group.loc[index_median.strftime('%Y-%m-%d')].iloc[::int((24/number))].reset_index())
-    output_data = pd.concat(years)
+    output_data = pd.concat(years, sort=True)
     output_data.rename(columns={'datetime': 'date', 'total':'median_day'},\
             inplace=True)
 
@@ -222,7 +222,7 @@ def create_timepoints(data, ext='.tab', **kwargs):
 
     # If multiple timeseries included in data
     if isinstance(data, list):
-        data = pd.concat(data)
+        data = pd.concat(data, sort=True)
 
     # TODO: Write test to check if columns exist
     data = data[['timestamp', 'TIMESERIES', 'daysinmonth']]
@@ -278,7 +278,7 @@ def create_timeseries(data, number, ext='.tab', **kwargs):
 
     # If multiple timeseries included in data
     if isinstance(data, list):
-        data = pd.concat(data)
+        data = pd.concat(data, sort=True)
 
 
     # Extract unique timeseries_id
@@ -324,7 +324,7 @@ def create_variablecp(gen_project, data, timeseries_dict, path=parent_path, ext=
 
     # If multiple timeseries included in data
     if isinstance(data, list):
-        data = pd.concat(data)
+        data = pd.concat(data, sort=True)
 
     # Check if file exist and removeit
     if os.path.exists(output_file):
@@ -357,16 +357,17 @@ def create_variablecp(gen_project, data, timeseries_dict, path=parent_path, ext=
     list1 = []
     for row, value in timeseries_dict.items():
         #  print (row)
-        tmp2 = pd.concat(value)
+        tmp2 = pd.concat(value, sort=True)
         filter_dates = (pd.DatetimeIndex(tmp2['date']
                                     .reset_index(drop=True))
                                     .strftime('%m-%d %H:%M:%S'))
         grouped = (ren_tmp[ren_tmp['time'].isin(filter_dates)]
                     .reset_index(drop=True)
                     .groupby('project_name', as_index=False))
-        list1.append(pd.concat([group.reset_index(drop=True) for name, group in grouped]))
+        list1.append(pd.concat([group.reset_index(drop=True)
+            for name, group in grouped], sort=True))
 
-    variable_cap = pd.concat(list1)
+    variable_cap = pd.concat(list1, sort=True)
     # FIXME: Temporal fix
     try:
         del variable_cap['GENERATION_PROJECT']
@@ -405,7 +406,7 @@ def create_loads(load, data, ext='.tab', **kwargs):
 
     # If multiple timeseries included in data
     if isinstance(data, list):
-        data = pd.concat(data)
+        data = pd.concat(data, sort=True)
 
     loads_tmp = load.copy() #[load.year <= 2025]
 
@@ -420,7 +421,7 @@ def create_loads(load, data, ext='.tab', **kwargs):
     # Temporal fix to convert series to dataframe
     loads_tab = pd.concat([group.reset_index()
                         for _, group in unstack_loads.groupby(level=0)]
-                        )
+                        , sort=True)
 
     # Renaming columns
     loads_tab = loads_tab.rename(columns={'level_0':'LOAD_ZONE',
@@ -477,7 +478,7 @@ def create_gen_build_cost(gen_project, gen_legacy,  ext='.tab',
     new_cost = create_gen_build_cost_new(new_plants)
     output_costs.append(new_cost)
 
-    gen_build_cost = pd.concat(output_costs)
+    gen_build_cost = pd.concat(output_costs, sort=True)
 
     # FIXME: Temporal fix to avoid duplicate entries
     df = (gen_build_cost.sort_values('gen_fixed_om')
