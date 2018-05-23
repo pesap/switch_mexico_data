@@ -6,16 +6,37 @@ import sys
 import yaml
 import glob
 import logging
+import click
 import pandas as pd
 from logging.config import fileConfig
 from context import *
 from IPython.core.debugger import set_trace
+from pathlib import Path
 
 
 logfile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'log.ini')
 #  print ( f'Log file configuration located at: {logfile_path}')
 fileConfig(logfile_path)
 logger = logging.getLogger('Logger')
+
+@click.group()
+@click.option('--verbose', default=False)
+def cli(ctx, verbose):
+    ctx.obj['verbose'] = debug
+    pass
+
+@cli.command()
+@click.pass_context
+def init(ctx):
+    """ This function should init the environment"""
+
+    default_dir = 'data/default'
+    output_dir = 'data/switch_inputs'
+    print (f'Creating directories:\n\t{default_dir}\n\t{output_dir}')
+    Path(default_dir).mkdir(parents=True, exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    print (f'Creation sucessfull!')
+
 
 def look_for_file(filename, path):
     file_path = os.path.join(path, filename)
@@ -147,7 +168,7 @@ def init_scenario():
     column_order = df_gen.columns
 
     #FIXME: Quick fix to replace tg for turbo_gas
-    df_gen['gen_tech'] = df_gen['gen_tech'].replace('tg','turbo_gas')
+    df_gen['gen_tech'] = df_gen['gen_tech'].replace('tg', 'turbo_gas')
 
     gen_default = pd.read_csv(os.path.join(default_path,
                                             'technology_cost.csv'))
@@ -161,6 +182,9 @@ def init_scenario():
     gen_restriction = {key:
             list(set(df_gen['gen_tech']) - set(df_gen.loc[df_gen['gen_load_zone'] == key, 'gen_tech']))
                         for key in load_zones['LOAD_ZONE']}
+    for k in gen_restriction:
+        gen_restriction[k] = [val for val in gen_restriction[k] if val not in
+                ('wind', 'solarpv', 'geothermal')]
     iterator = 1
     prop_gens = []
     for row in load_zones.itertuples():
@@ -186,6 +210,11 @@ def init_scenario():
 
         iterator +=1
     df_gen = pd.concat(prop_gens)
+
+    cap_limit = pd.read_csv(os.path.join(default_path, 'capacity_limit.csv'))
+    for index, row in cap_limit.iterrows():
+        df_gen.loc[df_gen['GENERATION_PROJECT'] == row['project'],
+                'gen_capacity_limit_mw'] = row['capacity_limit']
     df_gen[column_order].to_csv('generation_test.tab', sep='\t', index=False)
 
     return df_gen[column_order]

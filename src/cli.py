@@ -3,6 +3,7 @@ import click
 from __version__ import __version__
 from context import *
 #  from test_cli import utils
+from utils import init
 from utils import read_yaml, init_scenario
 from utils import create_gen_build_cost_new, look_for_file
 from create_inputs import *
@@ -115,7 +116,7 @@ def create(ctx, number, existing, proposed, load, path=script_path, **kwargs):
 
     click.echo(f'App ended')
 
-#  main.add_command(utils)
+main.add_command(init)
 
 if __name__ == "__main__":
     main(obj={})

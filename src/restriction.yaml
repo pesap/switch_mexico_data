@@ -29,11 +29,16 @@ technology:
                 - 53-mulege
         geothermal:
                 - 02-cananea
+                - 36-temascal
+                - 42-merida
+                - 44-chetumal 
+                - 35-acapulco
                 - 07-juarez
                 - 11-laguna
                 - 12-rio_escondido
                 - 13-nuevo_laredo
                 - 14-reynosa
+                - 16-monterrey
                 - 15-matamoros
                 - 17-saltillo
                 - 18-valles
@@ -47,6 +52,7 @@ technology:
                 - 49-san_luis_rio_colorado
                 - 50-villa_constitucion
                 - 51-la_paz
+                - 21-guemez
                 - 52-los_cabos
                 - 53-mulege
         hydroelectric_water_renewable:
@@ -79,4 +85,34 @@ technology:
                 - 34-puebla
                 - 35-acapulco
                 - 36-temascal
-
+        solarpv:
+                - 13-nuevo_laredo
+                - 15-matamoros
+                - 18-valles
+                - 20-tamazunchale
+                - 32-veracruz
+                - 29-lazaro_cardenas
+                - 36-temascal
+                - 40-ixtepec
+                - 37-coatzacoalcos
+                - 43-cancun
+                - 45-cozumel
+        solarpv_distributed:
+                - 13-nuevo_laredo
+                - 15-matamoros
+                - 18-valles
+                - 20-tamazunchale
+                - 32-veracruz
+                - 29-lazaro_cardenas
+                - 36-temascal
+                - 40-ixtepec
+                - 37-coatzacoalcos
+                - 43-cancun
+                - 45-cozumel
+        wind:
+                - 23-guadalajara
+                - 27-manzanillo
+                - 28-carapan
+                - 29-lazaro_cardenas
+                - 26-salamanca
+                - 35-acapulco

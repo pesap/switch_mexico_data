@@ -14,7 +14,8 @@ tqdm = "*"
 ipython = "*"
 jupyter = "*"
 jupyterlab = "*"
-
+geopandas = "*"
+rtree = "*"
 
 [requires]
 python_version = "3.6"

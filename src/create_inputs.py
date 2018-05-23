@@ -163,7 +163,7 @@ def get_median_day(data, number, freq='MS'):
 
     return (output_data)
 
-def create_investment_period(path=script_path, ext='.tab', **kwargs):
+def create_investment_period(path=default_path, ext='.tab', **kwargs):
     """ Create periods file using periods.yaml input
 
     Args:
@@ -437,7 +437,8 @@ def create_loads(load, data, ext='.tab', **kwargs):
     # Save output file
     loads_tab.to_csv(output_file, sep=sep, index=False)
 
-def create_gen_build_cost(gen_project, gen_legacy,  ext='.tab', path=script_path,
+def create_gen_build_cost(gen_project, gen_legacy,  ext='.tab',
+        path=default_path,
     **kwargs):
     """ Create gen build cost output file
 
@@ -456,7 +457,7 @@ def create_gen_build_cost(gen_project, gen_legacy,  ext='.tab', path=script_path
 
     output_costs = []
     gen_legacy.rename(columns={'PROJECT': 'GENERATION_PROJECT'}, inplace=True)
-    costs_legacy = pd.read_csv(os.path.join(default_path,'gen_build_costs.tab'), sep='\t')
+    costs_legacy = pd.read_csv(os.path.join(path,'gen_build_costs.tab'), sep='\t')
     columns = ['GENERATION_PROJECT','gen_overnight_cost', 'gen_fixed_om']
     output_columns = ['GENERATION_PROJECT', 'build_year', 'gen_overnight_cost',
                         'gen_fixed_om']
@@ -486,7 +487,7 @@ def create_gen_build_cost(gen_project, gen_legacy,  ext='.tab', path=script_path
     df[output_columns].to_csv(output_file, sep=sep, index=False)
     #  gen_build_cost.to_csv(output_file, sep=sep, index=False)
 
-def modify_costs(data):
+def modify_costs(data, path=default_path):
     """ Modify cost data to derate it
 
     Args:
@@ -497,7 +498,7 @@ def modify_costs(data):
     """
 
     # TODO: Make a more cleaner way to load the file
-    cost_table = pd.read_csv('src/cost_tables.csv')
+    cost_table = pd.read_csv(os.path.join(path, 'cost_tables.csv'))
 
     df = data.copy()
     techo = cost_table['Technology'].unique()
